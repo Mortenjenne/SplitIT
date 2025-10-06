@@ -37,7 +37,7 @@ public class ConnectionPool
                         System.getenv("JDBC_DB"));
             } else
             {
-                ds = createHikariConnectionPool("postgres", "postgres", "jdbc:postgresql://localhost:5432/%s?currentSchema=public", "msgboard");
+                ds = createHikariConnectionPool("postgres", "postgres", "jdbc:postgresql://localhost:5432/%s?currentSchema=public", "spiltit");
             }
             instance = new ConnectionPool();
         }

@@ -4,6 +4,8 @@ import app.entities.User;
 import app.exceptions.DatabaseException;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserMapper {
 
@@ -29,6 +31,34 @@ public class UserMapper {
             throw new DatabaseException("Couldn't find user");
         }
         return user;
+    }
+
+    public List<User> getAllUsers() throws DatabaseException
+    {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT * from users";
+
+        try (
+                Connection connection = ConnectionPool.getInstance().getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql)
+        )
+        {
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next())
+            {
+                int userId = rs.getInt("user_id");
+                String name = rs.getString("name");
+                String password = rs.getString("password");
+
+                users.add(new User(userId,name,password));
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved hentning af alle filer!!!!" + e.getMessage());
+        }
+        return users;
     }
 
     public User getUserById(int userId) throws DatabaseException {
