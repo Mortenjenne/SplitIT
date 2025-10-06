@@ -9,12 +9,17 @@ import java.util.List;
 
 public class UserMapper {
 
+    private ConnectionPool connectionPool;
+
+    public UserMapper(ConnectionPool connectionPool) {
+        this.connectionPool = connectionPool;
+    }
+
     public User login(String name, String password) throws DatabaseException {
-        String sql = "SELECT user_id, name, password" +
-                "FROM users WHERE name = ? AND password = ?";
+        String sql = "SELECT user_id, name, password FROM users WHERE name = ? AND password = ?";
         User user = null;
 
-        try(Connection connection = ConnectionPool.getInstance().getConnection();
+        try(Connection connection = connectionPool.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1,name);
@@ -39,7 +44,7 @@ public class UserMapper {
         String sql = "SELECT * from users";
 
         try (
-                Connection connection = ConnectionPool.getInstance().getConnection();
+                Connection connection = connectionPool.getConnection();
                 PreparedStatement ps = connection.prepareStatement(sql)
         )
         {
@@ -65,7 +70,7 @@ public class UserMapper {
         User user = null;
         String sql = "SELECT user_id, name, password FROM users WHERE user_id = ?";
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
+        try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
 
             ps.setInt(1, userId);
@@ -88,7 +93,7 @@ public class UserMapper {
     public boolean deleteMember(int user_id) throws DatabaseException {
         boolean result = false;
         String sql = "DELETE FROM users WHERE user_id = ?";
-        try (Connection connection = ConnectionPool.getInstance().getConnection()) {
+        try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement ps = connection.prepareStatement(sql)) {
                 ps.setLong(1, user_id);
                 int rowsAffected = ps.executeUpdate();
@@ -107,8 +112,8 @@ public class UserMapper {
     public User createUser(String name, String password) throws DatabaseException {
         String sql = "INSERT INTO users (name, password) VALUES (?,?)";
         User user = null;
-        try (Connection con = ConnectionPool.getInstance().getConnection();
-             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, name);
             ps.setString(2, password);
@@ -133,7 +138,7 @@ public class UserMapper {
         boolean result = false;
         String sql = "UPDATE users SET name = ?, password = ? WHERE user_id = ?";
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection()) {
+        try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement ps = connection.prepareStatement(sql)) {
                 ps.setString(1, user.getName());
                 ps.setString(2, user.getPassword());

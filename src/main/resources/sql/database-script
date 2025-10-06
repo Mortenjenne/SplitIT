@@ -1,68 +1,31 @@
--- Database script for SPLITit webapp, LIFEHACK project, Datamatiker 2. semester
-BEGIN;
-
-
-CREATE TABLE IF NOT EXISTS public.users
-(
-    user_id serial NOT NULL,
-    name character varying NOT NULL,
-    password character varying NOT NULL,
-    PRIMARY KEY (user_id)
+CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    password VARCHAR NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS public.expense
-(
-    expense_id serial NOT NULL,
-    user_id integer,
-    group_id integer,
-    amount double precision NOT NULL,
-    description character varying,
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (expense_id)
+CREATE TABLE groups (
+    group_id SERIAL PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS public."group"
-(
-    group_id serial NOT NULL,
-    name character varying NOT NULL,
-    PRIMARY KEY (group_id)
+CREATE TABLE group_users (
+    group_id INT NOT NULL,
+    user_id INT NOT NULL,
+    PRIMARY KEY (group_id, user_id),
+    FOREIGN KEY (group_id) REFERENCES groups(group_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
-CREATE TABLE IF NOT EXISTS public.group_users
-(
-    group_group_id serial NOT NULL,
-    users_user_id serial NOT NULL
+CREATE TABLE expense (
+    expense_id SERIAL PRIMARY KEY,
+    user_id INT,
+    group_id INT,
+    amount DOUBLE PRECISION NOT NULL,
+    description VARCHAR,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (group_id) REFERENCES groups(group_id)
 );
-
-ALTER TABLE IF EXISTS public.expense
-    ADD CONSTRAINT user_fk FOREIGN KEY (user_id)
-    REFERENCES public.users (user_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
-
-
-ALTER TABLE IF EXISTS public.expense
-    ADD CONSTRAINT group_fk FOREIGN KEY (group_id)
-    REFERENCES public."group" (group_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
-
-
-ALTER TABLE IF EXISTS public.group_users
-    ADD FOREIGN KEY (group_group_id)
-    REFERENCES public."group" (group_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
-
-
-ALTER TABLE IF EXISTS public.group_users
-    ADD FOREIGN KEY (users_user_id)
-    REFERENCES public.users (user_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
-
-END;

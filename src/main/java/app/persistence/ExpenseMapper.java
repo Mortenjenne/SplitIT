@@ -5,12 +5,17 @@ import app.exceptions.DatabaseException;
 import java.sql.*;
 
 public class ExpenseMapper {
+    private ConnectionPool connectionPool;
+
+    public ExpenseMapper(ConnectionPool connectionPool) {
+        this.connectionPool = connectionPool;
+    }
 
         public Expense createExpense(int userId, int groupId, String description, double amount) throws DatabaseException {
             String sql = "INSERT INTO expense (user_id, group_id, description, amount) VALUES (?,?,?,?)";
             Expense expense = null;
 
-            try (Connection connection = ConnectionPool.getInstance().getConnection();
+            try (Connection connection = connectionPool.getConnection();
                  PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
                 ps.setInt(1, userId);
@@ -39,7 +44,7 @@ public class ExpenseMapper {
             String sql = "select * from expense e join users u on u.user_id = e.user_id WHERE e.expense_id = ?";
 
             try (
-                    Connection connection = ConnectionPool.getInstance().getConnection();
+                    Connection connection = connectionPool.getConnection();
                     PreparedStatement ps = connection.prepareStatement(sql)
             )
             {
@@ -71,7 +76,7 @@ public class ExpenseMapper {
         String sql = "select * from expense e join users u on u.user_id = e.user_id WHERE e.expense_id = ?";
 
         try (
-                Connection connection = ConnectionPool.getInstance().getConnection();
+                Connection connection = connectionPool.getConnection();
                 PreparedStatement ps = connection.prepareStatement(sql)
         )
         {
@@ -102,7 +107,7 @@ public class ExpenseMapper {
             String sql = "UPDATE expense SET description = ?, amount = ? WHERE exspense_id = ?";
             boolean result = false;
 
-            try (Connection connection = ConnectionPool.getInstance().getConnection();
+            try (Connection connection = connectionPool.getConnection();
                  PreparedStatement ps = connection.prepareStatement(sql)) {
 
                 ps.setString(1, description);
@@ -128,7 +133,7 @@ public class ExpenseMapper {
             boolean result = false;
 
             try (
-                    Connection connection = ConnectionPool.getInstance().getConnection();
+                    Connection connection = connectionPool.getConnection();
                     PreparedStatement ps = connection.prepareStatement(sql)
             )
             {

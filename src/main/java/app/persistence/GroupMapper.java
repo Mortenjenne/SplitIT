@@ -6,11 +6,17 @@ import java.sql.*;
 
 public class GroupMapper {
 
+    private ConnectionPool connectionPool;
+
+    public GroupMapper(ConnectionPool connectionPool) {
+        this.connectionPool = connectionPool;
+    }
+
     public Group getGroupById(int groupId) throws DatabaseException {
         Group group = null;
-        String sql = "SELECT group_id, name FROM users WHERE group_id = ?";
+        String sql = "SELECT group_id, name FROM groups WHERE group_id = ?";
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
+        try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
 
             ps.setInt(1, groupId);
@@ -30,8 +36,8 @@ public class GroupMapper {
 
     public boolean deleteGroup(int groupId) throws DatabaseException {
         boolean result = false;
-        String sql = "DELETE FROM group WHERE group_id = ?";
-        try (Connection connection = ConnectionPool.getInstance().getConnection()) {
+        String sql = "DELETE FROM groups WHERE group_id = ?";
+        try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement ps = connection.prepareStatement(sql)) {
                 ps.setInt(1, groupId);
                 int rowsAffected = ps.executeUpdate();
@@ -48,9 +54,9 @@ public class GroupMapper {
     }
 
     public Group createGroup(String name) throws DatabaseException {
-        String sql = "INSERT INTO group (name) VALUES (?)";
+        String sql = "INSERT INTO groups (name) VALUES (?)";
         Group group = null;
-        try (Connection con = ConnectionPool.getInstance().getConnection();
+        try (Connection con = connectionPool.getConnection();
              PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, name);
@@ -70,9 +76,9 @@ public class GroupMapper {
 
     public boolean updateGroup(Group group) throws DatabaseException {
         boolean result = false;
-        String sql = "UPDATE group SET name = ? WHERE group_id = ?";
+        String sql = "UPDATE groups SET name = ? WHERE group_id = ?";
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection()) {
+        try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement ps = connection.prepareStatement(sql)) {
                 ps.setString(1, group.getName());
                 ps.setInt(2,group.getGroupId());
