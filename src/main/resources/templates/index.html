@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SPLITit</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/public/css/splitit.css" th:href="@{/css/splitit.css}" rel="stylesheet"/>
+</head>
+<body>
+<header>
+    <nav>
+        <a href="index.html"><img src="/public/images/logo.svg" alt="Split it logo"></a>
+    </nav>
+</header>
+<main>
+    <div class="Title">
+        <h1>SPLITit</h1>
+        <hr> <!-- Format this line - maybe id or class? -->
+        <h3>Your expense splitter</h3>
+    </div>
+    <div class="Selector">
+        <h2>Choose / create a group</h2>
+        <select name="group">
+            <option value="group1">Group 1</option>
+            <option value="group2">Group 2</option>
+            <option value="group3">Group 3</option>
+        </select>
+        <button type="submit">Show group</button> <!-- Couple button to dropdown -->
+    </div>
+    <div class="link">
+        <a href="createGroup.html">Create a group</a>
+    </div>
+</main>
+<footer>
+    <div>
+        <p><a href="https://github.com/Mortenjenne"><img src="/public/images/github-icon.svg" alt="Github icon"></a>MORTEN JENSEN</p>
+        <p><a href="https://github.com/DHangaard"><img src="/public/images/github-icon.svg" alt="Github icon"></a>DANIEL HANGAARD</p>
+    </div>
+</footer>
+</body>
+</html>
