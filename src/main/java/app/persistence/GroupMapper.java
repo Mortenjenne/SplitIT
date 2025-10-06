@@ -3,6 +3,7 @@ package app.persistence;
 import app.entities.Group;
 import app.exceptions.DatabaseException;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -36,7 +37,24 @@ public class GroupMapper {
         return group;
     }
 
-    public List<Group> getAllGroups() {
+    public List<Group> getAllGroups() throws DatabaseException {
+        String sql = "SELECT * FROM groups";
+        List<Group> groups = new ArrayList<>();
+
+        try(Connection connection = connectionPool.getConnection();
+        PreparedStatement ps = connection.prepareStatement(sql)){
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+               int groupId = rs.getInt("group_id");
+               String name = rs.getString("name");
+               groups.add(new Group(groupId,name));
+            }
+
+        }catch (SQLException e){
+            throw new DatabaseException("Kunne ikke hente alle grupper " + e.getMessage());
+        }
+        return groups;
     }
 
     public boolean deleteGroup(int groupId) throws DatabaseException {

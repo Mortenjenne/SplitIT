@@ -82,10 +82,25 @@ class GroupMapperTest {
     }
 
     @Test
-    void createGroup() {
+    void testCreateGroup() throws DatabaseException {
+        Group group = groupMapper.createGroup("Weekend i København");
+        assertNotNull(group);
+        Group expected = groupMapper.getGroupById(5);
+        assertEquals(expected,group);
     }
 
     @Test
-    void updateGroup() {
+    void testUpdateGroup() throws DatabaseException {
+        Group group = groupMapper.getGroupById(2);
+        assertNotNull(group);
+
+        group.setName("Motorcykel tur til Hartzen");
+
+        boolean isGroupUpdated = groupMapper.updateGroup(group);
+        assertTrue(isGroupUpdated);
+
+        Group actual = groupMapper.getGroupById(2);
+        String expected = "Motorcykel tur til Hartzen";
+        assertEquals(expected,actual.getName());
     }
 }
