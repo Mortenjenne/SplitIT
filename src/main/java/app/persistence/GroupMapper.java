@@ -3,6 +3,8 @@ package app.persistence;
 import app.entities.Group;
 import app.exceptions.DatabaseException;
 import java.sql.*;
+import java.util.Collection;
+import java.util.List;
 
 public class GroupMapper {
 
@@ -32,6 +34,9 @@ public class GroupMapper {
             throw new DatabaseException("Fejl ved hentning af bruger med id " + groupId + ": " + e.getMessage(), e);
         }
         return group;
+    }
+
+    public List<Group> getAllGroups() {
     }
 
     public boolean deleteGroup(int groupId) throws DatabaseException {
@@ -95,5 +100,7 @@ public class GroupMapper {
         }
         return result;
     }
+
+
 }
 
